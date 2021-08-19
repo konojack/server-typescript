@@ -1,9 +1,13 @@
-import { Request, Response, Router } from "express";
+import { Request, Response, Router } from 'express';
+
+interface RequestWithBody extends Request {
+  body: { [key: string]: string | undefined };
+}
 
 const router = Router();
 
 router.get('/login', (req: Request, res: Response) => {
-    res.send(`
+  res.send(`
     <form method="POST">
         <div>
             <label>Email</label>
@@ -16,12 +20,16 @@ router.get('/login', (req: Request, res: Response) => {
         <button>Submit</button>
     </form>
     `);
- })
+});
 
- router.post('/login', (req: Request, res: Response) => {
-     const { email, password } = req.body;
-    // console.log(req.body);
-     res.send(email + password);
- })
+router.post('/login', (req: RequestWithBody, res: Response) => {
+  const { email, password } = req.body;
+  // console.log(req.body);
+  if (email) {
+    res.send(email.toUpperCase());
+  } else {
+    res.send('YOU MUST PROVIDE AN EMAIL');
+  }
+});
 
- export { router };
+export { router };
